@@ -7,7 +7,16 @@ class Db
     private function __construct()
     {
         try {
-            $this->_db = new PDO('mysql:host=localhost;dbname=bdbn;charset=utf8', 'root', '');
+	    $db_url = parse_url(getenv("DATABASE_URL"));
+		
+            $this->_db = new PDO("pgsql:" . sprintf(
+		    "host=%s;port=%s;user=%s;password=%s;dbname=%s",
+		    $db_url["host"],
+		    $db_url["port"],
+		    $db_url["user"],
+		    $db_url["pass"],
+		    ltrim($db["path"], "/")
+		));
             $this->_db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
         } 
 		catch (PDOException $e) {
